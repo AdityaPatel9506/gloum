@@ -1,0 +1,12 @@
+{"status":200,"response":
+    {"tara":{"boy_tara":"Janam","girl_tara":"Janam","tara":3,"description":"Comfort - Prosperity - Health","name":"Tara","full_score":3},
+    "gana":{"boy_gana":"rakshas","girl_gana":"rakshas","gana":6,"description":"Temperament","name":"Gana","full_score":6},
+    "yoni":{"boy_yoni":"horse","girl_yoni":"horse","yoni":4,"description":"Intimacy","name":"Yoni","full_score":4},
+    "bhakoot":{"boy_rasi":11,"girl_rasi":11,"boy_rasi_name":"aquarius","girl_rasi_name":"aquarius","bhakoot":7,"description":"Constructive Ability / Constructivism / Society and Couple","name":"Rasi","full_score":7},
+    "grahamaitri":{"boy_lord":"saturn","girl_lord":"saturn","grahamaitri":5,"description":"Friendship","name":"Rasi AdhiPathi","full_score":5},
+    "vasya":{"boy_vasya":"Manava","girl_vasya":"Manava","vasya":2,"description":"Innate Giving / Attraction towards each other","name":"Vasya","full_score":2},
+    "nadi":{"boy_nadi":"Vaatha","girl_nadi":"Vaatha","nadi":0,"description":"Progeny","name":"Nadi","full_score":8},
+    "varna":{"boy_varna":"Shudra","girl_varna":"Shudra","varna":1,"description":"Work","name":"Varna","full_score":1},
+    "score":28,
+"bot_response":"Amazing!, Your score as per ashtakoot match is 28 out of 36,great"
+}

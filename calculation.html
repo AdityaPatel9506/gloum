@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Display Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .create-button {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        .create-button button {
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background-color: #28a745;
+            border-radius: 5px;
+        }
+        .create-button button:hover {
+            opacity: 0.9;
+        }
+        .blog-post {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .blog-post h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .blog-post p {
+            color: #555;
+        }
+        .button-group {
+            margin-top: 10px;
+        }
+        .button-group button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            background-color: #007BFF;
+            border-radius: 5px;
+        }
+        .button-group button.delete {
+            background-color: #DC3545;
+        }
+        .button-group button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="create-button">
+            <button>Create New Post</button>
+        </div>
+
+        <div class="blog-post">
+            <h2>Sample Blog Post 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae metus a velit cursus convallis.</p>
+            <div class="button-group">
+                <button>Edit</button>
+                <button class="delete">Delete</button>
+            </div>
+        </div>
+
+        <div class="blog-post">
+            <h2>Sample Blog Post 2</h2>
+            <p>Quisque at libero ultricies, placerat lacus non, luctus turpis. Fusce vel ante sit amet mauris.</p>
+            <div class="button-group">
+                <button>Edit</button>
+                <button class="delete">Delete</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
