@@ -1,31 +1,41 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const { createEvent, fetchAllEvents, fetchEventById, deleteEvent ,updateEvent} = require('../controllers/eventController'); // Import methods from the controller
+const {
+    createEvent,
+    fetchAllEvents,
+    fetchEventById,
+    deleteEvent,
+    updateEvent
+} = require('../controllers/yearlyEventcontroller'); // Import methods from the controller
 
 const router = express.Router();
 
 // Set up Multer storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        // Log incoming request body and file details
         console.log(req.body);
-        console.log(req.file);
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
+        // Create a unique filename
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
     }
 });
 
+// Configure Multer upload settings
 const upload = multer({ storage }).fields([
     { name: 'sectionImages', maxCount: 5 },
     { name: 'subsectionImages', maxCount: 5 }
 ]);
 
 // Routes
+
+// Create a new event
 router.post('/events', upload, (req, res, next) => {
-    // Log file names for sectionImages and subsectionImages
+    // Log uploaded file names
     if (req.files) {
         if (req.files.sectionImages) {
             req.files.sectionImages.forEach(file => {
@@ -42,17 +52,22 @@ router.post('/events', upload, (req, res, next) => {
         console.log('No files uploaded.');
     }
 
-    // Call the controller function
+    // Call the controller function to create an event
     createEvent(req, res, next);
 });
 
-router.get('/events', fetchAllEvents);  // Route for fetching all events
-router.get('/events/:id', fetchEventById);  // Route for fetching event by ID
-router.delete('/events/:id', deleteEvent);  // Route for deleting event by ID
-// router.put('/events/:id', upload, updateEvent);
+// Fetch all events
+router.get('/events', fetchAllEvents);
 
+// Fetch event by ID
+router.get('/events/:id', fetchEventById);
+
+// Delete event by ID
+router.delete('/events/:id', deleteEvent);
+
+// Update event by ID
 router.put('/events/:id', upload, (req, res, next) => {
-    // Log file names for sectionImages and subsectionImages on update
+    // Log uploaded file names during the update
     if (req.files) {
         if (req.files.sectionImages) {
             req.files.sectionImages.forEach(file => {
@@ -73,4 +88,5 @@ router.put('/events/:id', upload, (req, res, next) => {
     updateEvent(req, res, next);
 });
 
-module.exports = router;  // Export the router
+// Export the router
+module.exports = router;

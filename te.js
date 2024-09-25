@@ -1,10 +1,22 @@
-const Astronomical = require('astronomy-engine');
+const fs = require('fs');
+const path = require('path');
 
-// Example: Calculate sunrise and sunset
-const { getSunrise, getSunset } = Astronomical;
-const date = new Date();
-const latitude = 17.38333;
-const longitude = 78.4666;
+// Construct the relative path to the uploads directory
+const fileName = 'sectionImages-1726930021827-911164736.jpg'; // Use the actual file name
+const filePath = path.join(__dirname, './uploads', fileName);
+console.log(filePath);
 
-console.log('Sunrise:', getSunrise(date, latitude, longitude));
-console.log('Sunset:', getSunset(date, latitude, longitude));
+
+// Check if the file exists
+if (fs.existsSync(filePath)) {
+    // File exists, attempt to delete
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            console.error('Error deleting old section image:', err);
+        } else {
+            console.log('File deleted successfully');
+        }
+    });
+} else {
+    console.log('File not found, skipping deletion');
+}

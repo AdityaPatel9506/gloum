@@ -12,7 +12,8 @@ const nakshatraRoutes = require('./routes/nakshtraRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const birthchart = require('./routes/birthChartRoutes');
 const monthlySalesRoutes = require('./routes/monthlySalesRoutes');
-const eventRoutes = require('./routes/eventRoutes')
+const eventRoutes = require('./routes/eventRoutes');
+const yearlyEventRoutes = require('./routes/yearlyEventRoutes')
 const app = express();
 app.use(cookieParser());
 app.use(express.json());
@@ -43,6 +44,7 @@ app.use('/services', require('./routes/servicesRoutes'));
 app.use('/products', require('./routes/productsRoutes'));
 app.use('/monthly-sales', monthlySalesRoutes);
 app.use('/event', eventRoutes);
+app.use('/yearlyevent', yearlyEventRoutes)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

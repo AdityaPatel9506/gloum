@@ -1,4 +1,11 @@
-const { insertEvent, insertSubsection, getAllEvents, getEventById,deleteSubsectionsBySectionId,deleteEventFromDB } = require('../models/eventModel');
+const { 
+    insertEvent, 
+    insertSubsection, 
+    getAllEvents, 
+    getEventById, 
+    deleteSubsectionsBySectionId, 
+    deleteEventFromDB 
+} = require('../models/yearlyModel');
 const path = require('path');
 const fs = require('fs');
 const db = require('../config/db');
@@ -81,6 +88,7 @@ const fetchEventById = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 const deleteEvent = async (req, res) => {
     const { id } = req.params;
 
@@ -130,7 +138,7 @@ const updateEvent = async (req, res) => {
 
     try {
         // Fetch the current event data
-        const [currentEvent] = await db.query('SELECT * FROM sections WHERE id = ?', [id]);
+        const [currentEvent] = await db.query('SELECT * FROM yearly_events WHERE id = ?', [id]);
         if (!currentEvent.length) {
             return res.status(404).json({ error: 'Event not found' });
         }
@@ -157,12 +165,12 @@ const updateEvent = async (req, res) => {
 
         // Update the main event section
         await db.query(
-            'UPDATE sections SET title = ?, description = ?, image_url = ?, event_date = ? WHERE id = ?',
+            'UPDATE yearly_events SET title = ?, description = ?, image_url = ?, event_date = ? WHERE id = ?',
             [title, description, sectionImageUrls.join(','), event_date, id]
         );
 
         // Handle subsections
-        const [existingSubsections] = await db.query('SELECT * FROM subsections WHERE section_id = ?', [id]);
+        const [existingSubsections] = await db.query('SELECT * FROM yearly_event_subsections WHERE section_id = ?', [id]);
         console.log('Existing Subsections:', existingSubsections);
 
         if (Array.isArray(parsedSubsections) && parsedSubsections.length > 0) {
@@ -184,11 +192,10 @@ const updateEvent = async (req, res) => {
                     }
 
                     // Update existing subsection
-                    const result = await db.query(
-                        'UPDATE subsections SET title = ?, description = ?, image_url = ?, date = ? WHERE id = ?',
+                    await db.query(
+                        'UPDATE yearly_event_subsections SET title = ?, description = ?, image_url = ?, date = ? WHERE id = ?',
                         [subsection.title, subsection.description, subsectionImageUrl, subsection.date, subsection.id]
                     );
-                    console.log('Subsection update result:', result);
                 } else {
                     // Insert new subsection
                     await insertSubsection(
@@ -206,7 +213,7 @@ const updateEvent = async (req, res) => {
             const subsectionsToDelete = existingSubsections.filter(sub => !parsedSubsectionIds.includes(sub.id));
 
             for (const sub of subsectionsToDelete) {
-                await db.query('DELETE FROM subsections WHERE id = ?', [sub.id]);
+                await db.query('DELETE FROM yearly_event_subsections WHERE id = ?', [sub.id]);
             }
         }
 
