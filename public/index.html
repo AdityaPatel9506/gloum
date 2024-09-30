@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>Chat App</h1>
+    <input type="text" id="sessionId" placeholder="Enter Session ID" />
+    <input type="text" id="message" placeholder="Type a message" />
+    <button id="send-btn">Send</button>
+    <div id="messages"></div>
+
+    <script>
+        const socket = io();
+
+        document.getElementById("send-btn").addEventListener("click", () => {
+            const sessionId = document.getElementById("sessionId").value;
+            const message = document.getElementById("message").value;
+            const senderId = socket.id; // Get the current socket ID
+
+            // Emit the chat message to the server
+            socket.emit("chatMessage", { sessionId, message, senderId });
+
+            // Log the sent message
+            console.log(`Sent message from ${senderId} in ${sessionId}: ${message}`);
+
+            // Clear the input field
+            document.getElementById("message").value = ''; 
+        });
+
+        // Listen for new messages from the server
+        socket.on("newMessage", ({ sessionId, message, senderId }) => {
+            // Log the received message
+            console.log(`Received message from ${senderId} in ${sessionId}: ${message}`);
+
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML += `<p><strong>${senderId}:</strong> ${message} (Session: ${sessionId})</p>`;
+        });
+
+        // Join the room after inputting session ID
+        document.getElementById("sessionId").addEventListener("change", () => {
+            const sessionId = document.getElementById("sessionId").value;
+            socket.emit("joinRoom", { sessionId });
+            console.log(`Joined room: session-${sessionId}`);
+        });
+    </script>
+</body>
+</html>

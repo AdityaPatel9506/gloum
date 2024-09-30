@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <h1>User Chat</h1>
+    <div id="chat" style="border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll;"></div>
+    <input id="message" placeholder="Type your message..." />
+    <button id="sendBtn">Send</button>
+
+    <script>
+        const socket = io('http://localhost:5000'); // Replace with your server URL and port
+        const sessionId = 1; // Replace with your actual session ID
+        const userId = 1; // Replace with the user's ID
+
+        // Join the chat room
+        socket.emit('joinRoom', { sessionId });
+
+        // Listen for incoming messages
+        socket.on('message', (data) => {
+            const chatDiv = document.getElementById('chat');
+            chatDiv.innerHTML += `<p><strong>User ${data.senderId}:</strong> ${data.message}</p>`;
+            chatDiv.scrollTop = chatDiv.scrollHeight; // Auto-scroll to the bottom
+        });
+
+        // Send a chat message
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            const messageInput = document.getElementById('message');
+            const message = messageInput.value;
+            socket.emit('chatMessage', { sessionId, message, senderId: userId });
+            messageInput.value = ''; // Clear the input
+        });
+    </script>
+</body>
+</html>

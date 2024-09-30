@@ -1,0 +1,37 @@
+<!-- consultantList.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultant List</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>Select a Consultant</h1>
+    <div id="consultants"></div>
+
+    <script>
+        // Fetch consultants from the server
+        axios.get('/consultants')
+            .then(response => {
+                const consultantsDiv = document.getElementById('consultants');
+                response.data.forEach(consultant => {
+                    const button = document.createElement('button');
+                    button.textContent = `Chat with ${consultant.username}`;
+                    button.onclick = () => {
+                        axios.post('/chat/start', { consultantId: consultant.id })
+                            .then(res => {
+                                window.location.href = `chat.html?sessionId=${res.data.sessionId}`;
+                            })
+                            .catch(error => {
+                                console.error('Error starting chat session:', error);
+                            });
+                    };
+                    consultantsDiv.appendChild(button);
+                });
+            })
+            .catch(error => console.error('Error fetching consultants:', error));
+    </script>
+</body>
+</html>

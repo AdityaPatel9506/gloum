@@ -1,0 +1,40 @@
+{
+  "name": "astro",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "all-the-cities": "^3.1.0",
+    "astronomy-engine": "^2.1.19",
+    "axios": "^1.7.4",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cheerio": "^1.0.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.2.0",
+    "geo-tz": "^8.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "luxon": "^3.5.0",
+    "moment-timezone": "^0.5.45",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.0",
+    "node-geocoder": "^4.4.0",
+    "sequelize": "^6.37.3",
+    "socket.io": "^4.8.0",
+    "timezone": "^1.0.23"
+  },
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "socket.io-client": "^4.8.0",
+    "supertest": "^7.0.0"
+  }
+}
