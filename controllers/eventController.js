@@ -69,6 +69,7 @@ const fetchAllEvents = async (req, res) => {
 
 const fetchEventById = async (req, res) => {
     const { id } = req.params;
+console.log(id);
 
     try {
         const event = await getEventById(id);

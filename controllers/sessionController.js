@@ -14,7 +14,7 @@ const createSession = async (req, res) => {
     try {
         // Create a new session with the consultant ID, set status as 'ongoing'
         const [result] = await db.query(
-            "INSERT INTO consulting_sessions (consultant_id, start_time, status) VALUES (?, NOW(), 'ongoing')",
+            "INSERT INTO consulting_sessions (consultant_id, start_time, status) VALUES (?, NOW(), 'online')",
             [consultant_id]
         );
 

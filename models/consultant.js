@@ -2,19 +2,25 @@ const db = require('../config/db');
 
 // Create a new consultant
 const createConsultant = async (
-    username, 
-    email,          // Email is required
-    password,       // Password is required
-    onlineStatus,   // Online status is required
-    points,         // Points are required
-    intro           // Intro is required
+    username,
+    email,
+    password,
+    onlineStatus,
+    charges, // Replace points with charges
+    intro,
+    imagePath, // New parameter for image path
+    specialization, // New parameter
+    languages, // New parameter
+    experience // New parameter
 ) => {
     const [result] = await db.query(
-        'INSERT INTO consultants (username, email, password, online_status, points, intro) VALUES (?, ?, ?, ?, ?, ?)', 
-        [username, email, password, onlineStatus, points, intro] // Pass all required values
+        `INSERT INTO consultants (username, email, password, online_status, charges, intro, image, specialization, languages, experience)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [username, email, password, onlineStatus, charges, intro, imagePath, specialization, languages, experience] // New fields
     );
     return result.insertId; // Return the newly created consultant ID
 };
+
 
 // Update an existing consultant's status and points
 const updateConsultant = async (consultantId, onlineStatus, points) => {
@@ -24,6 +30,13 @@ const updateConsultant = async (consultantId, onlineStatus, points) => {
     );
     return result.affectedRows; // Return number of rows affected
 };
+
+
+const bcrypt = require('bcrypt');
+const fs = require('fs');
+
+
+
 
 // Get all consultants
 const getAllConsultants = async () => {
@@ -52,6 +65,7 @@ const deleteConsultant = async (consultantId) => {
 module.exports = {
     createConsultant,
     updateConsultant,
+
     getAllConsultants,
     getConsultantById,
     getConsultantByEmail, // Export the new method
