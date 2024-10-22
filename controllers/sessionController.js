@@ -1,5 +1,5 @@
 const db = require('../config/db'); // Your database connection
-
+const authModel = require('../models/authModel');
 // Create a new session (with only consultant_id initially)
 const createSession = async (req, res) => {
     const { consultant_id } = req.body;
@@ -30,8 +30,9 @@ const createSession = async (req, res) => {
 const getOnlineSessions = async (req, res) => {
     try {
         // Fetch sessions where status is 'ongoing'
-        const [sessions] = await db.query("SELECT * FROM consulting_sessions WHERE status = 'online'");
-
+        const [sessions] = await db.query("SELECT * FROM consulting_sessions  ");
+        
+        
         // Check if any ongoing sessions are found
         if (!sessions || sessions.length === 0) {
             return res.status(404).json({ message: 'No ongoing sessions found.' });
@@ -98,9 +99,86 @@ console.log(consultantId);
     }
 };
 
+
+const joinSession = async (req, res) => {
+    const { sessionId } = req.body;
+    const userId = req.user.id;
+
+    if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID is required to join a session.' });
+    }
+
+    try {
+        const [session] = await db.query("SELECT * FROM consulting_sessions WHERE session_id = ?", [sessionId]);
+        if (!session || session.length === 0) {
+            return res.status(404).json({ message: 'Session not found.' });
+        }
+
+        if (session[0].status !== 'online') {
+            return res.status(403).json({ message: 'Session is not available to join.' });
+        }
+
+        const user = await authModel.findUserById(userId);
+        const consultant = await authModel.findConsultantById(session[0].consultant_id);
+        if (!consultant) {
+            return res.status(404).json({ message: 'Consultant not found.' });
+        }
+
+        const userCredits = parseFloat(user.credits);
+        const consultantCharges = parseFloat(consultant.charges);
+
+        if (userCredits < consultantCharges) {
+            return res.status(403).json({ message: 'Insufficient credits to join this session.' });
+        }
+
+        await db.query("UPDATE consulting_sessions SET status = 'ongoing' WHERE session_id = ?", [sessionId]);
+
+        // Deduct the charges from user's credits and update in the database
+        const updatedCredits = userCredits - consultantCharges;
+        user.credits = updatedCredits;
+        await authModel.updateUserCredits(userId, updatedCredits);
+
+        // Respond with updated credits
+        res.status(200).json({
+            message: 'Successfully joined the session.',
+            sessionId,
+            updatedCredits // Send the updated credits to the client
+        });
+    } catch (error) {
+        console.error('Error joining session:', error);
+        res.status(500).json({ message: 'An error occurred while joining the session', error: error.message });
+    }
+};
+
+
+
+const getUserCredits = async (req, res) => {
+    try {
+        const userId = req.params.userId; // Get user_id from the URL
+console.log(userId);
+
+        // Find the user by ID
+        const user = await authModel.findUserById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Return the user's credits
+        res.status(200).json({ credits: user.credits });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+
 module.exports = {
     createSession,
     getOnlineSessions,
     updateSessionStatus,
-    getSessionsByConsultant
+    getSessionsByConsultant, 
+    joinSession,
+    getUserCredits 
 };

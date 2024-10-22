@@ -25,30 +25,8 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Check if the user exists first
-        const user = await authModel.findUserByEmail(email);
-        
-        if (!user) {
-            // If the user is not registered
-            return res.status(404).json({ error: 'User not registered' });
-        }
-
-        // Log the password entered by the user
-        console.log('Entered Password:', password);
-
-        // Assuming the user's password is hashed, you would typically compare it directly
-        const isValidPassword = await authModel.verifyPassword(user, password);
-
-        if (!isValidPassword) {
-            // If the password is incorrect
-            return res.status(401).json({ error: 'Incorrect email or password' });
-        }
-
-        // Assuming you have access to the hashed password for logging purposes
-        console.log('Stored Hashed Password:', user.password); // user.password should be the hashed password
-
-        // Generate the token
-        const token = jwt.sign({ email: user.email, userType: 'user' }, secretKey, { expiresIn: '10h' });
+        // Use the loginUser method from the model to handle login
+        const { token } = await authModel.loginUser(email, password);
 
         // Set the token in an HTTP-only cookie with security options
         res.cookie('gloum_token', token, {
@@ -57,11 +35,20 @@ const login = async (req, res) => {
             sameSite: 'Strict'
         });
 
-        // Respond with a message and token
+        // Respond with a message and token (if you want to return the token in the response body as well)
         res.status(200).json({ message: 'Login successful', token });
-      
+        
     } catch (error) {
         console.error('Error during login:', error); // Log the error for debugging
+
+        // Handle specific error messages
+        if (error.message === 'User not found') {
+            return res.status(404).json({ error: 'User not registered' });
+        } else if (error.message === 'Invalid credentials') {
+            return res.status(401).json({ error: 'Incorrect email or password' });
+        }
+
+        // Handle any other errors
         res.status(500).json({ error: 'An error occurred during login' });
     }
 };

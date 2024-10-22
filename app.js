@@ -22,6 +22,7 @@ const yearlyEventRoutes = require('./routes/yearlyEventRoutes');
 const chatRoutes = require('./routes/chatRoutes'); // Import your chat routes
 const adminRoutes = require('./routes/adminRoutes'); 
 const sessionRoutes = require('./routes/sessionRoutes');
+const contactRoutes = require('./routes/contact');
 const app = express();
 
 // Create an HTTP server to work with Socket.io
@@ -70,10 +71,10 @@ app.use('/consultants', consultantRoutes);
 
 app.use('/sessions', sessionRoutes)
 
+// email 
+app.use('/contact', contactRoutes);
 
-app.get("/",(req,res) =>{
-    return res.sendFile("/public/index.html");
-})
+
 
 // Initialize Socket.io
 initializeSocket(server);

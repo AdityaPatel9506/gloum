@@ -205,16 +205,18 @@ const updateConsultantData = async (req, res) => {
             );
 
             // If a new image has been uploaded, delete the old image from the filesystem
-            if (imagePath && oldConsultant.image) {
-                fs.unlink(oldConsultant.image, (err) => {
-                    if (err) {
-                        console.error('Error deleting old image:', err);
-                    }
-                });
-            }
+            // if (imagePath && oldConsultant.image) {
+            //     fs.unlink(oldConsultant.image, (err) => {
+            //         if (err) {
+            //             console.error('Error deleting old image:', err);
+            //         }
+            //     });
+            // }
 
             return res.status(200).json({ message: 'Consultant updated successfully' });
         } else {
+            console.log("hello");
+            
             return res.status(404).json({ message: 'Consultant not found' });
         }
     } catch (error) {

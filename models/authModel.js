@@ -13,7 +13,30 @@ const findUserByEmail = async (email) => {
         throw error;
     }
 };
+// find user by id
 
+const findUserById = async (userId) => {
+    try {
+        const [users] = await db.query('SELECT * FROM users WHERE user_id = ?', [userId]);
+        return users.length > 0 ? users[0] : null;
+    } catch (error) {
+        throw error;
+    }
+};
+const findConsultantById = async (consultantId) => {
+    const [consultant] = await db.query("SELECT * FROM consultants WHERE consultant_id = ?", [consultantId]);
+    return consultant[0]; // Return the consultant object
+};
+
+const updateUserCredits = async (userId, newCredits) => {
+    try {
+        const [result] = await db.query("UPDATE users SET credits = ? WHERE user_id = ?", [newCredits, userId]);
+        return result.affectedRows > 0; // Return true if the update was successful
+    } catch (error) {
+        console.error('Error updating user credits:', error);
+        throw new Error('Failed to update user credits');
+    }
+};
 // Register a new user
 const registerUser = async (name, email, password) => {
     try {
@@ -46,6 +69,8 @@ const loginUser = async (email, password) => {
         if (!user) {
             throw new Error('User not found');
         }
+       
+        
 
         const isMatch = await verifyPassword(user, password);
         if (!isMatch) {
@@ -53,7 +78,7 @@ const loginUser = async (email, password) => {
         }
 
         const token = jwt.sign(
-            { id: user.id, email: user.email },
+            { id: user.user_id, email: user.email, user_name:user.username,userType: 'user', credits:user.credits }, // Include userType if needed
             secretKey,
             { expiresIn: '10h' }
         );
@@ -62,6 +87,11 @@ const loginUser = async (email, password) => {
     } catch (error) {
         throw error;
     }
+};
+
+const updatePassword = async (email, newPassword) => {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.query('UPDATE users SET password = ? WHERE email = ?', [hashedPassword, email]);
 };
 
 // Verify JWT token
@@ -80,4 +110,8 @@ module.exports = {
     verifyPassword,
     loginUser,
     verifyToken,
+    findUserById,
+    updateUserCredits,
+    findConsultantById,
+    updatePassword
 };
